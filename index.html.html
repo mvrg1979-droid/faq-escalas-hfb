@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Sistema de Escalas Médicas HFB v2.0</title>
+<style>
+  /* ── TOKEN SYSTEM ───────────────────────────────────────────
+     Palette  : Azul federal profundo + branco clínico + verde status + âmbar alerta
+     Type     : Inter (display/corpo) + JetBrains Mono (códigos/tags)
+     Signature: Barra lateral colorida dinâmica por seção + pill badges nos códigos
+  ─────────────────────────────────────────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --azul-federal:  #0C2D6B;
+    --azul-medio:    #1A56C4;
+    --azul-claro:    #E8F0FE;
+    --branco:        #FFFFFF;
+    --cinza-bg:      #F5F7FA;
+    --cinza-borda:   #D8E0EE;
+    --cinza-texto:   #4A5568;
+    --verde:         #0D6E3B;
+    --verde-bg:      #E6F4ED;
+    --laranja:       #B45309;
+    --laranja-bg:    #FEF3C7;
+    --vermelho:      #991B1B;
+    --vermelho-bg:   #FEE2E2;
+    --roxo:          #5B21B6;
+    --roxo-bg:       #EDE9FE;
+    --azul-cyan:     #0E7490;
+    --cyan-bg:       #E0F2FE;
+    --texto-preto:   #0F1F3D;
+    --sombra:        0 2px 8px rgba(12,45,107,.10);
+    --sombra-lg:     0 8px 32px rgba(12,45,107,.14);
+    --radius:        10px;
+    --radius-sm:     6px;
+    --radius-pill:   99px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--cinza-bg);
+    color: var(--texto-preto);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────────── */
+  header {
+    background: var(--azul-federal);
+    color: #fff;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+
+  .header-inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-logo {
+    width: 42px;
+    height: 42px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 22px;
+  }
+
+  .header-titles { flex: 1; }
+
+  .header-titles h1 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+    line-height: 1.2;
+  }
+
+  .header-titles p {
+    font-size: .72rem;
+    opacity: .7;
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  .header-badge {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+
+  /* ── SEARCH BAR ──────────────────────────────────────────── */
+  .search-wrap {
+    background: var(--azul-medio);
+    padding: 16px 24px;
+  }
+
+  .search-inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .search-inner input {
+    width: 100%;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.25);
+    color: #fff;
+    border-radius: var(--radius-pill);
+    padding: 10px 20px 10px 46px;
+    font-family: 'Inter', sans-serif;
+    font-size: .9rem;
+    outline: none;
+    transition: background .2s, border-color .2s;
+  }
+
+  .search-inner input::placeholder { color: rgba(255,255,255,.55); }
+  .search-inner input:focus {
+    background: rgba(255,255,255,.2);
+    border-color: rgba(255,255,255,.5);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .6;
+    font-size: 1rem;
+    color: #fff;
+    pointer-events: none;
+  }
+
+  #search-count {
+    text-align: center;
+    color: rgba(255,255,255,.65);
+    font-size: .78rem;
+    margin-top: 8px;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────── */
+  .layout {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* ── SIDEBAR NAV ─────────────────────────────────────────── */
+  .sidebar {
+    position: sticky;
+    top: 110px;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    border: 1px solid var(--cinza-borda);
+  }
+
+  .sidebar-title {
+    background: var(--azul-federal);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+  }
+
+  .sidebar nav { padding: 8px 0; }
+
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--cinza-texto);
+    transition: background .15s, color .15s;
+    border-left: 3px solid transparent;
+    line-height: 1.3;
+  }
+
+  .sidebar nav a:hover {
+    background: var(--azul-claro);
+    color: var(--azul-medio);
+    border-left-color: var(--azul-medio);
+  }
+
+  .sidebar nav a.active {
+    background: var(--azul-claro);
+    color: var(--azul-federal);
+    border-left-color: var(--azul-federal);
+    font-weight: 600;
+  }
+
+  .sidebar nav a .nav-icon { font-size: 1rem; flex-shrink: 0; }
+
+  .sidebar-count {
+    margin-left: auto;
+    background: var(--cinza-bg);
+    color: var(--cinza-texto);
+    font-size: .68rem;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: var(--radius-pill);
+  }
+
+  /* ── MAIN CONTENT ────────────────────────────────────────── */
+  .main { min-width: 0; }
+
+  /* ── AVISO BANNER ────────────────────────────────────────── */
+  .aviso-banner {
+    background: var(--laranja-bg);
+    border: 1px solid #FCD34D;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    font-size: .85rem;
+    color: #78350F;
+    line-height: 1.5;
+  }
+
+  .aviso-banner .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+  .aviso-banner strong { font-weight: 700; }
+
+  /* ── SECTION ─────────────────────────────────────────────── */
+  .faq-section {
+    margin-bottom: 36px;
+    scroll-margin-top: 120px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--cinza-borda);
+  }
+
+  .section-num {
+    background: var(--azul-federal);
+    color: #fff;
+    font-weight: 800;
+    font-size: .85rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-icon { font-size: 1.4rem; }
+
+  .section-header h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--azul-federal);
+    line-height: 1.25;
+    flex: 1;
+  }
+
+  /* ── FAQ ITEM ────────────────────────────────────────────── */
+  .faq-item {
+    background: #fff;
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+
+  .faq-item:hover { box-shadow: var(--sombra-lg); }
+
+  .faq-item.hidden { display: none; }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 16px 18px;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--texto-preto);
+    line-height: 1.4;
+    transition: background .15s;
+  }
+
+  .faq-q:hover { background: var(--azul-claro); }
+
+  .faq-q .q-icon {
+    background: var(--azul-claro);
+    color: var(--azul-medio);
+    font-style: normal;
+    font-weight: 800;
+    font-size: .78rem;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: .02em;
+  }
+
+  .faq-q .chevron {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: .9rem;
+    color: var(--azul-medio);
+    transition: transform .25s;
+    padding-top: 2px;
+  }
+
+  .faq-item.open .chevron { transform: rotate(180deg); }
+
+  .faq-a {
+    display: none;
+    padding: 0 18px 18px 18px;
+    border-top: 1px solid var(--cinza-borda);
+    background: var(--cinza-bg);
+  }
+
+  .faq-item.open .faq-a { display: block; }
+
+  .faq-a p, .faq-a ul, .faq-a ol {
+    font-size: .87rem;
+    color: var(--cinza-texto);
+    line-height: 1.7;
+    margin-top: 14px;
+  }
+
+  .faq-a ul, .faq-a ol { padding-left: 20px; }
+  .faq-a li { margin-bottom: 5px; }
+  .faq-a li::marker { color: var(--azul-medio); }
+
+  .faq-a strong { color: var(--texto-preto); font-weight: 600; }
+
+  /* ── CODE BADGE (para códigos de marcação) ───────────────── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    margin: 1px 2px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .badge-code   { background: #EEF2FF; color: #3730A3; border: 1px solid #C7D2FE; }
+  .badge-ok     { background: var(--verde-bg); color: var(--verde); border: 1px solid #A7F3D0; }
+  .badge-warn   { background: var(--laranja-bg); color: var(--laranja); border: 1px solid #FCD34D; }
+  .badge-error  { background: var(--vermelho-bg); color: var(--vermelho); border: 1px solid #FECACA; }
+  .badge-info   { background: var(--cyan-bg); color: var(--azul-cyan); border: 1px solid #BAE6FD; }
+  .badge-purple { background: var(--roxo-bg); color: var(--roxo); border: 1px solid #DDD6FE; }
+
+  /* ── TABLE ────────────────────────────────────────────────── */
+  .faq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+    margin-top: 14px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--cinza-borda);
+  }
+
+  .faq-table th {
+    background: var(--azul-federal);
+    color: #fff;
+    font-weight: 600;
+    padding: 9px 14px;
+    text-align: left;
+    font-size: .78rem;
+    letter-spacing: .03em;
+  }
+
+  .faq-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--cinza-borda);
+    vertical-align: top;
+    color: var(--cinza-texto);
+    line-height: 1.5;
+  }
+
+  .faq-table tr:last-child td { border-bottom: none; }
+  .faq-table tr:nth-child(even) td { background: var(--azul-claro); }
+
+  /* ── STEPS ────────────────────────────────────────────────── */
+  .steps { margin-top: 14px; }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    background: var(--azul-federal);
+    color: #fff;
+    font-weight: 700;
+    font-size: .75rem;
+    min-width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-text { font-size: .87rem; color: var(--cinza-texto); line-height: 1.6; }
+
+  /* ── ALERT BOXES ─────────────────────────────────────────── */
+  .alert {
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: .83rem;
+    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .alert-icon { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
+  .alert-red    { background: var(--vermelho-bg); color: var(--vermelho); border: 1px solid #FECACA; }
+  .alert-yellow { background: var(--laranja-bg);  color: var(--laranja);  border: 1px solid #FCD34D; }
+  .alert-green  { background: var(--verde-bg);    color: var(--verde);    border: 1px solid #6EE7B7; }
+  .alert-blue   { background: var(--cyan-bg);     color: var(--azul-cyan); border: 1px solid #BAE6FD; }
+
+  /* ── NO RESULTS ──────────────────────────────────────────── */
+  #no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--cinza-texto);
+  }
+
+  #no-results .icon { font-size: 3rem; margin-bottom: 16px; }
+  #no-results h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--texto-preto); }
+  #no-results p { font-size: .88rem; }
+
+  /* ── FOOTER ──────────────────────────────────────────────── */
+  footer {
+    background: var(--azul-federal);
+    color: rgba(255,255,255,.65);
+    text-align: center;
+    font-size: .75rem;
+    padding: 24px;
+    line-height: 1.8;
+  }
+
+  footer strong { color: #fff; }
+
+  /* ── SCROLL TO TOP ───────────────────────────────────────── */
+  #scroll-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--azul-federal);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: var(--sombra-lg);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s, transform .2s;
+    z-index: 50;
+  }
+
+  #scroll-top:hover { background: var(--azul-medio); transform: translateY(-2px); }
+  #scroll-top.visible { display: flex; }
+
+  /* ── RESPONSIVE ──────────────────────────────────────────── */
+  @media (max-width: 840px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .sidebar nav { display: flex; flex-wrap: wrap; padding: 8px; gap: 4px; }
+    .sidebar nav a { border-left: none; border-radius: var(--radius-pill); padding: 6px 12px; border-bottom: 2px solid transparent; font-size: .76rem; }
+    .sidebar nav a.active { border-bottom-color: var(--azul-federal); }
+    .sidebar-count { display: none; }
+  }
+
+  @media (max-width: 520px) {
+    .header-inner { padding: 12px 16px; }
+    .layout { padding: 20px 16px 48px; }
+    .search-wrap { padding: 12px 16px; }
+    .header-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="header-logo">🏥</div>
+    <div class="header-titles">
+      <h1>Sistema de Escalas Médicas HFB — Perguntas Frequentes</h1>
+      <p>Hospital Federal de Bonsucesso · Assessoria da Superintendência · Versão 2.0 · Junho/2026</p>
+    </div>
+    <div class="header-badge">Uso Interno Restrito</div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Pesquise uma dúvida… ex: 'x12d', 'log', 'férias', 'PJ'" autocomplete="off">
+    </div>
+    <div id="search-count"></div>
+  </div>
+</header>
+
+<!-- ═══ LAYOUT ════════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Navegação por Seção</div>
+    <nav id="sidebar-nav">
+      <a href="#s1" class="active"><span class="nav-icon">📋</span> Visão Geral <span class="sidebar-count">5</span></a>
+      <a href="#s2"><span class="nav-icon">⚙️</span> Configuração <span class="sidebar-count">4</span></a>
+      <a href="#s3"><span class="nav-icon">📅</span> Escala <span class="sidebar-count">7</span></a>
+      <a href="#s4"><span class="nav-icon">✅</span> Presença <span class="sidebar-count">5</span></a>
+      <a href="#s5"><span class="nav-icon">📝</span> Auditoria & LOG <span class="sidebar-count">5</span></a>
+      <a href="#s6"><span class="nav-icon">📊</span> Dashboard <span class="sidebar-count">4</span></a>
+      <a href="#s7"><span class="nav-icon">🗂️</span> Bases de Dados <span class="sidebar-count">4</span></a>
+      <a href="#s8"><span class="nav-icon">🔧</span> Situações Práticas <span class="sidebar-count">8</span></a>
+      <a href="#s9"><span class="nav-icon">📌</span> Listas & Domínios <span class="sidebar-count">2</span></a>
+      <a href="#s10"><span class="nav-icon">💻</span> Problemas Técnicos <span class="sidebar-count">5</span></a>
+      <a href="#s11"><span class="nav-icon">🏛️</span> Governança <span class="sidebar-count">5</span></a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Aviso -->
+    <div class="aviso-banner">
+      <span class="icon">⚠️</span>
+      <div>
+        <strong>Documento oficial de uso interno restrito.</strong> Este FAQ é complementar às instruções do arquivo .xlsx. Toda alteração pós-envio exige registro no <strong>LOG_ALTERACOES</strong>. Arquivos devem ser retidos por no mínimo <strong>5 anos</strong> (CGU/TCU). Em caso de dúvidas técnicas, contate a Assessoria da Superintendência HFB/GHC.
+      </div>
+    </div>
+
+    <!-- ───────── SEÇÃO 1 ───────── -->
+    <section class="faq-section" id="s1">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <span class="section-icon">📋</span>
+        <h2>Visão Geral do Sistema</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é este arquivo e para que serve?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>É o <strong>Sistema de Controle de Escalas Médicas do HFB</strong> (Hospital Federal de Bonsucesso), versão 2.0, desenvolvido pela Assessoria da Superintendência em parceria com o GHC. Trata-se de um instrumento oficial de Gestão, Controle e Auditoria que centraliza em uma única planilha:</p>
+          <ul>
+            <li>O planejamento mensal da escala (aba <strong>ESCALA</strong>)</li>
+            <li>O registro diário de presença (aba <strong>PRESENÇA</strong>)</li>
+            <li>A trilha de auditoria de todas as alterações (aba <strong>LOG_ALTERACOES</strong>)</li>
+            <li>Painéis gerenciais para Superintendência e DGH (<strong>DASHBOARD</strong> e <strong>CONSOLIDADO</strong>)</li>
+          </ul>
+          <div class="alert alert-blue"><span class="alert-icon">ℹ️</span> Referências normativas: GRH 390 | CGU | TCU | Política de Escalas HFB.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quais são as abas do arquivo e o que cada uma faz?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <table class="faq-table">
+            <thead><tr><th>Aba</th><th>Função</th><th>Responsável</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CAPA</strong></td><td>Apresentação, versão e referências normativas</td><td>Leitura</td></tr>
+              <tr><td><strong>INSTRUÇÕES</strong></td><td>Manual resumido, fluxo e legendas</td><td>Leitura</td></tr>
+              <tr><td><strong>CONFIGURAR</strong></td><td>Define setor, mês, ano e responsável</td><td>Chefia</td></tr>
+              <tr><td><strong>ESCALA</strong></td><td>Lançamento da escala planejada</td><td>Chefia</td></tr>
+              <tr><td><strong>PRESENÇA</strong></td><td>Registro diário do realizado vs. planejado</td><td>Chefia + Administrativo</td></tr>
+              <tr><td><strong>LOG_ALTERACOES</strong></td><td>Trilha de auditoria de todas as alterações</td><td>Quem altera</td></tr>
+              <tr><td><strong>CONSOLIDADO</strong></td><td>Visão mensal por vínculo, especialidade e CH</td><td>Leitura gerencial</td></tr>
+              <tr><td><strong>DASHBOARD</strong></td><td>KPIs para Superintendência e DGH</td><td>Leitura gerencial</td></tr>
+              <tr><td><strong>BASE_GHC</strong></td><td>Cadastro de profissionais GHC/CTU/Cedidos</td><td>RH</td></tr>
+              <tr><td><strong>BASE_PJ</strong></td><td>Cadastro de médicos PJ</td><td>Setor de Contratos</td></tr>
+              <tr><td><strong>DOMINIOS</strong></td><td>Tabelas de referência e listas suspensas</td><td>Assessoria Sup.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quais vínculos de profissionais são contemplados?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O sistema contempla 8 tipos de vínculo:</p>
+          <table class="faq-table">
+            <thead><tr><th>Vínculo</th><th>Descrição</th><th>Preenchimento do ID</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-info">GHC</span></td><td>Servidor do Grupo Hospitalar Conceição</td><td>Registro GHC (nº) — carrega automático</td></tr>
+              <tr><td><span class="badge badge-info">CTU</span></td><td>Cadastro Temporário da União</td><td>Registro GHC (nº) — igual ao GHC</td></tr>
+              <tr><td><span class="badge badge-purple">MS</span></td><td>Servidor do Ministério da Saúde sem registro GHC</td><td>Escreva o nome completo; preencha manualmente</td></tr>
+              <tr><td><span class="badge badge-purple">MS/GHC</span></td><td>Duplo vínculo MS e GHC</td><td>Registro GHC — carrega automático</td></tr>
+              <tr><td><span class="badge badge-purple">NERJ</span></td><td>Cedido pelo Ministério da Saúde</td><td>Nome completo; preencha manualmente</td></tr>
+              <tr><td><span class="badge badge-warn">PJ</span></td><td>Médico pessoa jurídica</td><td>CRM (ex.: CRM 966738/RJ) — carrega via BASE_PJ</td></tr>
+              <tr><td><span class="badge badge-warn">CEDIDO</span></td><td>Cedido de outro órgão público</td><td>Nome completo; preencha manualmente</td></tr>
+              <tr><td><span class="badge badge-warn">TERCEIRIZADO</span></td><td>Empresa terceirizada</td><td>Nome completo; preencha manualmente</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quem pode acessar e preencher o arquivo?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O arquivo possui classificação <strong>"Uso Interno Restrito"</strong>. O preenchimento segue hierarquia de responsabilidade:</p>
+          <ul>
+            <li><strong>Chefia do setor:</strong> abas CONFIGURAR, ESCALA e PRESENÇA.</li>
+            <li><strong>Administrativo:</strong> conferência da aba PRESENÇA (dupla validação).</li>
+            <li><strong>Quem altera:</strong> LOG_ALTERACOES (obrigatório para qualquer alteração pós-envio).</li>
+            <li><strong>Superintendência / DGH:</strong> leitura do CONSOLIDADO e DASHBOARD.</li>
+            <li><strong>RH:</strong> manutenção exclusiva da BASE_GHC.</li>
+            <li><strong>Setor de Contratos:</strong> manutenção exclusiva da BASE_PJ.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Posso usar o mesmo arquivo para meses diferentes?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p><strong>Não é recomendado.</strong> Cada competência (mês/ano) deve ter seu próprio arquivo, garantindo integridade do histórico e facilitando auditorias.</p>
+          <div class="alert alert-yellow"><span class="alert-icon">⚠️</span> Ao iniciar um novo mês, salve uma cópia do arquivo, atualize a aba CONFIGURAR e limpe os lançamentos das abas ESCALA, PRESENÇA e LOG_ALTERACOES antes de iniciar o novo período.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 2 ───────── -->
+    <section class="faq-section" id="s2">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <span class="section-icon">⚙️</span>
+        <h2>Configuração Inicial</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Por onde devo começar a usar o arquivo?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Sempre pela aba <strong>CONFIGURAR</strong>. Siga os passos abaixo em ordem:</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Acesse a aba <strong>CONFIGURAR</strong> → selecione Setor, Mês, Ano e informe o nome completo do responsável.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Na aba <strong>ESCALA</strong>: insira o vínculo (col. A) e o ID do profissional (col. B). Nome e dados carregam automaticamente via PROCV.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Preencha os dias do mês usando os <strong>códigos de marcação</strong> (<span class="badge badge-code">x12d</span>, <span class="badge badge-code">x12n</span>, <span class="badge badge-code">Fe</span>, <span class="badge badge-code">At</span>, etc.).</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Antes do dia 5 do mês seguinte:</strong> preencha a aba PRESENÇA com o realizado.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Qualquer alteração após o envio: registre <strong>obrigatoriamente</strong> no LOG_ALTERACOES.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Valide no CONSOLIDADO, exporte PDF e envie ao DGH via <strong>GRH 390</strong>.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que devo preencher na aba CONFIGURAR?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <table class="faq-table">
+            <thead><tr><th>Campo</th><th>Instrução</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Setor / Unidade</strong></td><td>Selecione na lista suspensa (ex.: HFB - EMERGENCIA - MEDICOS)</td></tr>
+              <tr><td><strong>Mês de Referência</strong></td><td>Janeiro a Dezembro</td></tr>
+              <tr><td><strong>Ano de Referência</strong></td><td>Ex.: 2026</td></tr>
+              <tr><td><strong>Responsável pelo Setor</strong></td><td>Nome completo da chefia</td></tr>
+              <tr><td><strong>Matrícula do Responsável</strong></td><td>Registro GHC ou matrícula MS</td></tr>
+              <tr><td><strong>Data de Envio ao DGH</strong></td><td>Preencher no formato DD/MM/AAAA no momento do envio</td></tr>
+              <tr><td><strong>Versão do Arquivo</strong></td><td>Começa em v1; incremente a cada revisão enviada (v2, v3…)</td></tr>
+              <tr><td><strong>Status da Escala</strong></td><td><span class="badge badge-warn">RASCUNHO</span> → <span class="badge badge-info">VALIDADA</span> → <span class="badge badge-ok">ENVIADA</span></td></tr>
+            </tbody>
+          </table>
+          <p>Os campos <em>Nº de Profissionais, Total de Plantões, Horas Previstas e Vínculos Distintos</em> são calculados automaticamente.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que significa o campo "Status da Escala"?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <ul>
+            <li><span class="badge badge-warn">RASCUNHO</span> — Escala em elaboração, ainda não validada.</li>
+            <li><span class="badge badge-info">VALIDADA</span> — Revisada e aprovada pela chefia, pronta para envio.</li>
+            <li><span class="badge badge-ok">ENVIADA</span> — Já encaminhada ao DGH via GRH 390.</li>
+          </ul>
+          <p>Atualize este campo sempre que o status mudar. Ele é exibido no cabeçalho da aba ESCALA e no DASHBOARD.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é o campo "Versão do Arquivo" e quando incrementar?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O campo Versão controla as revisões do documento. Começa em <span class="badge badge-code">v1</span> no envio inicial e deve ser incrementado (<span class="badge badge-code">v2</span>, <span class="badge badge-code">v3</span>…) a cada nova versão enviada ao DGH. Isso permite rastrear qual versão foi entregue em qual data.</p>
+          <div class="alert alert-green"><span class="alert-icon">✅</span> Sempre que incrementar a versão, registre também a alteração no LOG_ALTERACOES com a justificativa da revisão.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 3 ───────── -->
+    <section class="faq-section" id="s3">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <span class="section-icon">📅</span>
+        <h2>Preenchimento da Escala</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Como adiciono um profissional na aba ESCALA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Coluna A (<strong>VÍNCULO</strong>): selecione o tipo de vínculo na lista suspensa.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Coluna B (<strong>ID</strong>): <br>→ <span class="badge badge-info">GHC / CTU / MS-GHC</span>: Registro GHC (nº). Dados carregam automaticamente via PROCV.<br>→ <span class="badge badge-purple">MS / NERJ / CEDIDO / TERCEIRIZADO</span>: escreva o nome completo. Preencha cargo e especialidade manualmente.<br>→ <span class="badge badge-warn">PJ</span>: CRM (ex.: CRM 966738/RJ). Dados carregam via BASE_PJ.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Preencha os dias do mês com os códigos de marcação corretos.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quais são os códigos de marcação da grade de dias? (ATUALIZADO para Junho/2026)
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>A versão atual do sistema ampliou os códigos de plantão para maior precisão na carga horária:</p>
+          <table class="faq-table">
+            <thead><tr><th>Código</th><th>Significado</th><th>Efeito no totalizador</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-ok">x24</span></td><td>Plantão de <strong>24 horas</strong></td><td>Conta como plantão (Pl. 24h)</td></tr>
+              <tr><td><span class="badge badge-ok">x20</span></td><td>Plantão de <strong>20 horas</strong></td><td>Conta como plantão (Pl. 20h)</td></tr>
+              <tr><td><span class="badge badge-ok">x12d</span></td><td>Plantão de <strong>12h diurno</strong></td><td>Conta como plantão (Pl. 12h)</td></tr>
+              <tr><td><span class="badge badge-ok">x12n</span></td><td>Plantão de <strong>12h noturno</strong></td><td>Conta como plantão (Pl. 12h)</td></tr>
+              <tr><td><span class="badge badge-ok">x8</span></td><td>Plantão de <strong>8 horas</strong></td><td>Conta como plantão (Pl. 8h)</td></tr>
+              <tr><td><span class="badge badge-ok">x6</span></td><td>Plantão de <strong>6 horas</strong></td><td>Conta como plantão (Pl. 6h)</td></tr>
+              <tr><td><span class="badge badge-ok">x4</span></td><td>Plantão de <strong>4 horas</strong></td><td>Conta como plantão (Pl. 4h)</td></tr>
+              <tr><td><span class="badge badge-warn">Fe</span></td><td>Férias</td><td>Ausência — NÃO conta como plantão</td></tr>
+              <tr><td><span class="badge badge-warn">At</span></td><td>Atestado / Licença médica</td><td>Conta como ausência</td></tr>
+              <tr><td><span class="badge badge-info">LC</span></td><td>Licença para Curso / Congresso</td><td>Conta como PLANTÃO (GHC)</td></tr>
+              <tr><td><span class="badge badge-warn">IND</span></td><td>Indisponível (PJ sem agenda)</td><td>Conta como ausência</td></tr>
+              <tr><td><span class="badge badge-info">SUB</span></td><td>Substituição</td><td>Outro profissional cobriu o turno</td></tr>
+              <tr><td><span class="badge badge-error">FALTA</span></td><td>Falta injustificada</td><td>Alerta vermelho automático</td></tr>
+            </tbody>
+          </table>
+          <div class="alert alert-yellow"><span class="alert-icon">⚠️</span> <strong>Mudança importante (v. Junho/2026):</strong> O código genérico <span class="badge badge-code">x</span> foi substituído por códigos específicos. Use <span class="badge badge-code">x12d</span> para plantão diurno e <span class="badge badge-code">x12n</span> para noturno. Os novos códigos <span class="badge badge-code">x24</span> e <span class="badge badge-code">x20</span> foram adicionados. Os totalizadores agora incluem colunas separadas para Pl. 20h e Pl. 24h.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que significam os alertas de STATUS na última coluna da aba ESCALA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <ul>
+            <li><span class="badge badge-ok">✓ OK</span> — O número de plantões/horas está dentro do esperado para o mês.</li>
+            <li><span class="badge badge-warn">⚠ EXCESSO</span> — Profissional escalado acima do limite contratual. Ex.: médico com 120h/mês com 12 plantões de 12h = 144h. Requer revisão imediata.</li>
+            <li><span class="badge badge-error">⚠ BAIXO</span> — Profissional com menos plantões que o mínimo esperado. Pode indicar férias, atestados ou erro de lançamento.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Como funciona o TOTALIZADOR na aba ESCALA? (ATUALIZADO para Junho/2026)
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Ao final de cada linha, o sistema calcula automaticamente:</p>
+          <table class="faq-table">
+            <thead><tr><th>Coluna</th><th>O que conta</th></tr></thead>
+            <tbody>
+              <tr><td>Pl. 4h</td><td>Quantidade de plantões de 4h (<span class="badge badge-code">x4</span>)</td></tr>
+              <tr><td>Pl. 6h</td><td>Quantidade de plantões de 6h (<span class="badge badge-code">x6</span>)</td></tr>
+              <tr><td>Pl. 8h</td><td>Quantidade de plantões de 8h (<span class="badge badge-code">x8</span>)</td></tr>
+              <tr><td>Pl. 12h</td><td>Plantões de 12h diurno (<span class="badge badge-code">x12d</span>) e noturno (<span class="badge badge-code">x12n</span>)</td></tr>
+              <tr><td><strong>Pl. 20h</strong> 🆕</td><td>Quantidade de plantões de 20h (<span class="badge badge-code">x20</span>)</td></tr>
+              <tr><td><strong>Pl. 24h</strong> 🆕</td><td>Quantidade de plantões de 24h (<span class="badge badge-code">x24</span>)</td></tr>
+              <tr><td>TOTAL PLANTÕES</td><td>Soma de todos os tipos</td></tr>
+              <tr><td>TOTAL HORAS</td><td>Total de horas calculado conforme os tipos de plantão</td></tr>
+              <tr><td>AUSÊN. (dias)</td><td>Dias com At, FALTA, IND</td></tr>
+              <tr><td>FÉRIAS (dias)</td><td>Dias marcados como <span class="badge badge-code">Fe</span></td></tr>
+              <tr><td>STATUS ESCALA</td><td>✓ OK / ⚠ EXCESSO / ⚠ BAIXO</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é o Código de Escala e o campo HORÁRIO?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O Código de Escala é um número que identifica o turno padrão do profissional, cadastrado na BASE_GHC. Exemplos:</p>
+          <table class="faq-table">
+            <thead><tr><th>Código</th><th>Turno</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-code">1020</span></td><td>07:00 às 19:00 (12h diurno)</td></tr>
+              <tr><td><span class="badge badge-code">1021</span></td><td>19:00 às 07:00 (12h noturno)</td></tr>
+              <tr><td><span class="badge badge-code">1080</span></td><td>07:00 às 19:00 (CH 180h/mês)</td></tr>
+              <tr><td><span class="badge badge-code">2040</span></td><td>08:00-12:00 / 13:00-17:00 (cedidos/administrativos)</td></tr>
+            </tbody>
+          </table>
+          <p>O campo HORÁRIO exibe a descrição completa do turno automaticamente quando o ID do profissional é inserido.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é a linha "↳ Presença realizada" na aba ESCALA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Esta linha é gerada automaticamente e exibe um resumo do que foi registrado na aba PRESENÇA para aquele profissional. Serve como referência visual rápida para verificar divergências entre o planejado e o realizado sem precisar navegar para outra aba.</p>
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> Não edite esta linha manualmente — ela é calculada automaticamente a partir da aba PRESENÇA.</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ───────── SEÇÃO 4 ───────── -->
+    <section class="faq-section" id="s4">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <span class="section-icon">✅</span>
+        <h2>Controle de Presença</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quando e como preencher a aba PRESENÇA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Deve ser preenchida <strong>diariamente</strong> ou ao menos semanalmente pela chefia, com prazo máximo até o <strong>dia 5 do mês seguinte</strong>.</p>
+          <table class="faq-table">
+            <thead><tr><th>Código</th><th>Significado</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-ok">P</span></td><td>Presente — compareceu ao plantão</td></tr>
+              <tr><td><span class="badge badge-error">F</span></td><td>Falta sem justificativa</td></tr>
+              <tr><td><span class="badge badge-warn">J</span></td><td>Ausência justificada (aceita)</td></tr>
+              <tr><td><span class="badge badge-warn">At</span></td><td>Atestado médico</td></tr>
+              <tr><td><span class="badge badge-warn">Fe</span></td><td>Férias</td></tr>
+              <tr><td><span class="badge badge-info">SUB</span></td><td>Substituição — outro cobriu o turno</td></tr>
+            </tbody>
+          </table>
+          <p>Deixe em <strong>branco</strong> os dias em que o profissional não estava escalado.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Qual a diferença entre os códigos da ESCALA e da PRESENÇA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>São registros distintos com finalidades complementares:</p>
+          <ul>
+            <li><strong>ESCALA (planejado):</strong> <span class="badge badge-code">x12d</span> <span class="badge badge-code">x12n</span> <span class="badge badge-code">x24</span> <span class="badge badge-code">x20</span> <span class="badge badge-code">Fe</span> <span class="badge badge-code">At</span> <span class="badge badge-code">LC</span> <span class="badge badge-code">IND</span> <span class="badge badge-code">SUB</span> <span class="badge badge-code">FALTA</span> — o que foi planejado para o profissional.</li>
+            <li><strong>PRESENÇA (realizado):</strong> <span class="badge badge-code">P</span> <span class="badge badge-code">F</span> <span class="badge badge-code">J</span> <span class="badge badge-code">At</span> <span class="badge badge-code">Fe</span> <span class="badge badge-code">SUB</span> — o que efetivamente aconteceu no dia.</li>
+          </ul>
+          <div class="alert alert-blue"><span class="alert-icon">ℹ️</span> Divergências entre ESCALA e PRESENÇA geram alertas automáticos no DASHBOARD.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é a "dupla validação" da presença?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Por boas práticas de governança, o registro de presença deve ser preenchido pela <strong>chefia</strong> e conferido por um <strong>administrativo</strong>. Isso reduz erros e garante maior confiabilidade para auditorias da CGU e TCU.</p>
+          <p>Além disso, devem ser mantidos registros físicos complementares: livro de ponto ou lista de assinatura dos profissionais.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que acontece quando registro uma FALTA na aba PRESENÇA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Quando uma falta injustificada (<span class="badge badge-code">F</span>) é registrada, o sistema automaticamente:</p>
+          <ul>
+            <li>Contabiliza no totalizador de faltas do profissional.</li>
+            <li>Alimenta o indicador de Taxa de Absenteísmo no DASHBOARD.</li>
+            <li>Gera alerta <span class="badge badge-error">🔴 VERMELHO</span> se a taxa superar 15%.</li>
+          </ul>
+          <div class="alert alert-yellow"><span class="alert-icon">⚠️</span> Falta injustificada (F) é diferente de ausência justificada (J) ou atestado (At). Use o código correto para não distorcer os indicadores.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que significa o campo % PRESENÇA na aba PRESENÇA?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Calcula automaticamente a taxa de presença do profissional no mês: <strong>nº de presenças ÷ total de dias escalados</strong>. Exemplos:</p>
+          <ul>
+            <li>7 presenças em 11 dias escalados = <span class="badge badge-warn">63,6%</span> (caso Beatriz N. Moreira em Junho/2026)</li>
+            <li>10 presenças em 10 dias escalados = <span class="badge badge-ok">100%</span></li>
+          </ul>
+          <p>Este indicador alimenta os KPIs do DASHBOARD.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 5 ───────── -->
+    <section class="faq-section" id="s5">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <span class="section-icon">📝</span>
+        <h2>Auditoria &amp; LOG de Alterações</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Por que existe o LOG_ALTERACOES e quando devo usá-lo?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O LOG_ALTERACOES é a <strong>trilha de auditoria oficial</strong> do sistema. É <strong>obrigatório</strong> toda vez que qualquer dado for alterado <em>após o envio inicial ao DGH</em>, atendendo às exigências da CGU e TCU.</p>
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> Alteração sem registro no LOG pode ser considerada <strong>irregular em auditoria</strong>.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quais informações devo preencher no LOG_ALTERACOES?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <table class="faq-table">
+            <thead><tr><th>Campo</th><th>Instrução</th></tr></thead>
+            <tbody>
+              <tr><td>Nº Registro</td><td>Número sequencial único (não reutilize)</td></tr>
+              <tr><td>Data/Hora Alteração</td><td>Data e hora exatas (ex.: 17/04/2026 às 14:40h)</td></tr>
+              <tr><td>Responsável</td><td>Nome completo de quem realizou a alteração</td></tr>
+              <tr><td>Matrícula</td><td>Registro GHC ou matrícula MS do responsável</td></tr>
+              <tr><td>Profissional Afetado</td><td>Nome do médico/servidor cuja escala foi alterada</td></tr>
+              <tr><td>Campo Alterado</td><td>Qual campo/dia foi modificado (ex.: Dia 01/04/26)</td></tr>
+              <tr><td>Valor Anterior</td><td>O dado que estava antes (ex.: "x")</td></tr>
+              <tr><td>Valor Novo</td><td>O dado que passou a ser (ex.: "At")</td></tr>
+              <tr><td>Motivo / Justificativa</td><td>Explicação detalhada da razão da alteração</td></tr>
+              <tr><td>Status</td><td>Ex.: APROVADA</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Posso excluir linhas ou abas do arquivo?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> <strong>NÃO.</strong> Este arquivo é um documento oficial. A exclusão de linhas do LOG ou de qualquer aba pode ser interpretada como adulteração de documento público em auditoria da CGU ou TCU. Se um dado foi inserido por engano, registre a correção no LOG com motivo detalhado.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Por quanto tempo devo guardar os arquivos?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Mínimo de <strong>5 anos</strong>, conforme exigência da CGU e TCU. Mantenha cópias em repositório institucional seguro e não apenas no computador local do responsável.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Como envio o arquivo ao DGH?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Valide os dados no CONSOLIDADO e no DASHBOARD.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Confirme que o Status está como <span class="badge badge-info">VALIDADA</span> na aba CONFIGURAR.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Informe a <strong>Data de Envio ao DGH</strong> no campo correspondente do CONFIGURAR.</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Exporte o arquivo em <strong>PDF</strong> — não envie apenas o .xlsx.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Encaminhe ao DGH via <strong>GRH 390</strong>.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Arquive o .xlsx original para fins de auditoria.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 6 ───────── -->
+    <section class="faq-section" id="s6">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <span class="section-icon">📊</span>
+        <h2>Dashboard &amp; Consolidado</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que posso visualizar no DASHBOARD?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <ul>
+            <li>Total de Profissionais na Escala, Plantões Previstos, Horas Previstas, Ausências e Alterações.</li>
+            <li>Distribuição por Vínculo com plantões, horas, ausências e % presença.</li>
+            <li>KPIs de Qualidade: Taxa de Absenteísmo (meta ≤ 10%), Cobertura de Escala (meta ≥ 95%), CH Média por Profissional, Nº Médicos PJ Ativos, Nº Alterações no Mês e Status da Escala.</li>
+            <li>Alertas e Ações Recomendadas com código de cores.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que significam os alertas coloridos no DASHBOARD?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="alert alert-red"><span class="alert-icon">🔴</span> <strong>Absenteísmo &gt; 15%:</strong> situação crítica. Acionar chefia imediata e RH.</div>
+          <div class="alert alert-yellow"><span class="alert-icon">🟡</span> <strong>Cobertura &lt; 80%:</strong> cobertura insuficiente. Revisar escala e avaliar plantões extras.</div>
+          <div class="alert" style="background:#FFF7ED;color:#92400E;border:1px solid #FCD34D;"><span class="alert-icon">🟠</span> <strong>Alterações sem LOG:</strong> irregularidade de governança. Toda alteração pós-envio deve estar no LOG_ALTERACOES.</div>
+          <div class="alert alert-blue"><span class="alert-icon">🔵</span> <strong>PJ sem confirmação:</strong> risco contratual. Verificar execução dos contratos PJ com o setor de contratos.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que mostra o CONSOLIDADO?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <ul>
+            <li><strong>Seção 1 — Por Vínculo:</strong> nº de profissionais, plantões previstos e realizados, horas, ausências, férias, % presença e absenteísmo, CH média.</li>
+            <li><strong>Seção 2 — Por Especialidade:</strong> nº de médicos, plantões, ausências e % cobertura (indicador 🟢 / ⚠️).</li>
+            <li><strong>Seção 3 — Resumo Executivo:</strong> visão sintética para DGH e Superintendência com os totais mais relevantes.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O DASHBOARD e o CONSOLIDADO precisam ser preenchidos manualmente?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p><strong>Não.</strong> Ambos são alimentados por fórmulas que referenciam as abas ESCALA e PRESENÇA. Qualquer dado lançado nessas abas atualiza automaticamente os painéis. Não insira dados manualmente nessas abas.</p>
+          <div class="alert alert-green"><span class="alert-icon">✅</span> Sempre que o arquivo travar ou parecer desatualizado, pressione F9 no Excel para forçar o recálculo de todas as fórmulas.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 7 ───────── -->
+    <section class="faq-section" id="s7">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <span class="section-icon">🗂️</span>
+        <h2>Bases de Dados</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é a BASE_GHC e quem pode alterá-la?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>A BASE_GHC é o cadastro centralizado de todos os profissionais com vínculos GHC, CTU e Cedidos. Contém: Registro, Nome, Vínculo, Cargo, Especialidade, Setor, CH Mensal, Código de Escala, Horário, Mínimo e Máximo de plantões e Código do Setor.</p>
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> Esta base é mantida <strong>exclusivamente pelo RH</strong>. Chefias e usuários operacionais não devem alterá-la.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que é a BASE_PJ e como ela funciona?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>A BASE_PJ é o cadastro dos médicos contratados como pessoa jurídica. Contém: CRM/ID, Nome, Cargo, Especialidade, Setor, Contrato, Item Contratual, Turno Padrão, Código de Escala, CNPJ/CPF e nome da Contratada.</p>
+          <p>Quando a chefia insere um CRM na aba ESCALA com vínculo <span class="badge badge-warn">PJ</span>, o sistema busca automaticamente os dados nesta base via PROCV.</p>
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> Mantida <strong>exclusivamente pelo Setor de Contratos</strong>.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O profissional não está aparecendo na BASE_GHC. O que fazer?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Possíveis causas:</p>
+          <ul>
+            <li>Profissional não cadastrado — acione o RH para inclusão.</li>
+            <li>Número de registro digitado incorretamente — verifique com o RH.</li>
+            <li>Espaço invisível antes/depois do ID — apague e redigite o número.</li>
+          </ul>
+          <p>Enquanto o cadastro não é feito, insira os dados manualmente na ESCALA e registre a situação nas observações.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Posso adicionar um novo setor ou especialidade que não está na lista?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Não diretamente. A aba DOMINIOS é a tabela mestre e deve ser atualizada pela <strong>Assessoria da Superintendência</strong>. Para solicitar a inclusão, contate a Assessoria com a justificativa.</p>
+          <div class="alert alert-yellow"><span class="alert-icon">⚠️</span> Alterar a aba DOMINIOS sem autorização pode comprometer as validações do sistema inteiro.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 8 ───────── -->
+    <section class="faq-section" id="s8">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <span class="section-icon">🔧</span>
+        <h2>Situações Práticas Frequentes</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Profissional entrou de férias no meio do mês. Como registro?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Na aba <strong>ESCALA</strong>: marque com o código de plantão correto (ex.: <span class="badge badge-code">x12d</span>) nos dias trabalhados, e com <span class="badge badge-code">Fe</span> em cada dia de férias. O sistema contabilizará as férias na coluna FÉRIAS (dias) e os plantões realizados antes do início.</p>
+          <p>Na aba <strong>PRESENÇA</strong>: repita o mesmo procedimento — código de presença (<span class="badge badge-code">P</span>) nos dias trabalhados e <span class="badge badge-code">Fe</span> nos de férias.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Médico faltou sem aviso. Como registro?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Na aba <strong>ESCALA</strong>: mantenha o código de plantão (<span class="badge badge-code">x12d</span> etc.), pois a escala foi planejada. Na aba <strong>PRESENÇA</strong>: registre <span class="badge badge-error">F</span> (falta injustificada) no dia correspondente.</p>
+          <p>Se posteriormente o profissional apresentar atestado, altere para <span class="badge badge-code">J</span> ou <span class="badge badge-code">At</span> e registre a alteração no <strong>LOG_ALTERACOES</strong>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Profissional foi substituído por outro. Como registro?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Na aba <strong>ESCALA</strong>: marque <span class="badge badge-code">SUB</span> para o profissional ausente. Para o substituto, acrescente uma nova linha com seus dados e marque o código de plantão correto no dia.</p>
+          <p>Na aba <strong>PRESENÇA</strong>: registre <span class="badge badge-code">SUB</span> para o substituído e <span class="badge badge-code">P</span> para o substituto. Se ocorreu após o envio, registre no <strong>LOG_ALTERACOES</strong>.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Médico PJ não confirmou agenda. O que uso?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Use o código <span class="badge badge-code">IND</span> (Indisponível) para os dias sem agenda confirmada. Isso conta como ausência e gera alerta <span class="badge badge-info">🔵 AZUL</span> no DASHBOARD. Acione o Setor de Contratos para verificar a execução do contrato.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Servidor participou de congresso/curso. Conta como falta?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Para servidores <span class="badge badge-info">GHC</span>, a Licença para Curso/Congresso (<span class="badge badge-code">LC</span>) conta como <strong>plantão</strong>, não como ausência. Use <span class="badge badge-code">LC</span> nos dias correspondentes na aba ESCALA e mantenha a documentação comprobatória arquivada.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Percebi um erro após já ter enviado ao DGH. O que faço?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Faça a correção necessária nas abas ESCALA e/ou PRESENÇA.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Registre a alteração no <strong>LOG_ALTERACOES</strong> com todos os campos preenchidos.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Incremente a <strong>Versão do Arquivo</strong> no CONFIGURAR (ex.: v1 → v2).</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Atualize o Status para <span class="badge badge-info">VALIDADA</span>.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Exporte novo PDF e reenvie ao DGH via <strong>GRH 390</strong>, indicando que é versão revisada.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que significa ⚠ EXCESSO na escala de um profissional?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Indica que o profissional foi escalado com carga horária <strong>superior ao contrato mensal</strong>. Ex.: médico com 120h/mês com 12 plantões de 12h = 144h.</p>
+          <ul>
+            <li>Para PJ: pode configurar irregularidade contratual.</li>
+            <li>Para servidores: pode configurar acúmulo indevido de horas.</li>
+          </ul>
+          <p>A chefia deve revisar a escala ou justificar formalmente o excesso.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que significa ⚠ BAIXO na escala de um profissional?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Indica que o profissional foi escalado com carga horária <strong>abaixo do mínimo esperado</strong>. Verifique a causa:</p>
+          <ul>
+            <li>Férias, licença ou atestado documentado → status correto, não há problema.</li>
+            <li>Escala ainda não preenchida → preencha os dias pendentes.</li>
+            <li>Erro de lançamento → corrija e registre no LOG_ALTERACOES.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 9 ───────── -->
+    <section class="faq-section" id="s9">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <span class="section-icon">📌</span>
+        <h2>Listas Suspensas &amp; Domínios</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O que são as listas suspensas e de onde vêm?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>As listas suspensas (dropdowns) garantem que apenas valores permitidos sejam inseridos em determinados campos. São alimentadas pela aba <strong>DOMINIOS</strong>, que contém tabelas de referência com: Setores/Unidades, Meses, Anos, Códigos de marcação, Tipos de vínculo, Cargos e Especialidades disponíveis.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Por que aparece erro ao digitar um valor que não está na lista?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O arquivo possui validação de dados ativa em campos críticos. Se você digitar um valor não previsto, o Excel rejeitará a entrada para evitar inconsistências nos cálculos e indicadores. Use sempre os valores da lista suspensa.</p>
+          <p>Se precisar inserir um novo código ou valor, contate a <strong>Assessoria da Superintendência</strong> para que a aba DOMINIOS seja atualizada.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 10 ───────── -->
+    <section class="faq-section" id="s10">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <span class="section-icon">💻</span>
+        <h2>Problemas Técnicos</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O nome do profissional não carregou automaticamente ao digitar o ID. Por quê?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <ul>
+            <li>O vínculo selecionado na coluna A não confere com o tipo de ID inserido.</li>
+            <li>O número de registro não existe na BASE_GHC — verifique com o RH.</li>
+            <li>CRM digitado com formatação diferente da cadastrada na BASE_PJ.</li>
+            <li>Espaço invisível antes/depois do ID — apague e redigite.</li>
+            <li>Para vínculos <span class="badge badge-purple">MS</span>, <span class="badge badge-purple">NERJ</span>, <span class="badge badge-warn">CEDIDO</span> e <span class="badge badge-warn">TERCEIRIZADO</span>, o nome deve ser digitado manualmente — não há busca automática.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          O arquivo está muito lento. O que fazer?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <ul>
+            <li>Evite abrir outros arquivos pesados simultaneamente.</li>
+            <li>Use "Colar Especial → Somente Valores" (Ctrl+Alt+V) ao colar de outros arquivos.</li>
+            <li>Certifique-se de que o modo de cálculo do Excel está em <strong>Automático</strong> (Fórmulas → Opções de Cálculo → Automático).</li>
+            <li>Se possível, use um computador com pelo menos 8 GB de RAM.</li>
+            <li>Pressione <strong>F9</strong> para forçar o recálculo manual se o modo estiver como "Manual".</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Apareceu erro de fórmula (#VALOR!, #REF!, #N/D). O que fazer?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> <strong>Não altere a fórmula diretamente.</strong> Anote em qual aba e célula apareceu o erro e o que estava sendo feito. Contate imediatamente a Assessoria da Superintendência. Alterar fórmulas sem autorização pode comprometer a integridade dos dados de auditoria.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Posso preencher o arquivo no Google Sheets ou LibreOffice?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>O sistema foi desenvolvido e homologado para <strong>Microsoft Excel</strong>. O uso em alternativas pode causar:</p>
+          <ul>
+            <li>Perda ou falha das fórmulas PROCV e validações.</li>
+            <li>Incompatibilidade com listas suspensas.</li>
+            <li>Formatação corrompida.</li>
+          </ul>
+          <div class="alert alert-yellow"><span class="alert-icon">⚠️</span> Em caso de impossibilidade de usar o Excel, consulte a Assessoria da Superintendência antes de usar alternativas.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Posso salvar o arquivo em outro formato (.csv, .ods)?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> <strong>NÃO.</strong> O arquivo deve ser mantido exclusivamente no formato <span class="badge badge-code">.xlsx</span>. Salvar em outros formatos causa perda de fórmulas, validações e formatações condicionais. O PDF é gerado apenas para envio ao DGH, mantendo sempre o .xlsx como arquivo de trabalho.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── SEÇÃO 11 ───────── -->
+    <section class="faq-section" id="s11">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <span class="section-icon">🏛️</span>
+        <h2>Governança &amp; Boas Práticas</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Qual é a periodicidade do fluxo de trabalho?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <table class="faq-table">
+            <thead><tr><th>Período</th><th>Ação</th></tr></thead>
+            <tbody>
+              <tr><td>Dias 1–3 do mês</td><td>Configurar a aba CONFIGURAR com dados do novo mês</td></tr>
+              <tr><td>Durante o mês</td><td>Preencher ESCALA (planejado) e PRESENÇA (diariamente)</td></tr>
+              <tr><td>Até dia 5 do mês seguinte</td><td>Concluir PRESENÇA</td></tr>
+              <tr><td>Após conclusão</td><td>Validar no CONSOLIDADO, exportar PDF, enviar ao DGH via GRH 390</td></tr>
+              <tr><td>Qualquer alteração posterior</td><td>LOG_ALTERACOES + nova versão + reenvio</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Como devo nomear o arquivo ao salvar?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Siga o padrão de nomenclatura:<br><span class="badge badge-code">HFB_ESCALAS_[SETOR]_[DDMMAAAA].xlsx</span></p>
+          <p>Exemplo: <span class="badge badge-code">HFB_ESCALAS_EMERGENCIA_MEDICOS_30062026.xlsx</span></p>
+          <p>Sempre inclua a data de referência no nome para facilitar o controle de versões e o arquivamento histórico.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Posso compartilhar o arquivo por WhatsApp ou e-mail pessoal?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <div class="alert alert-red"><span class="alert-icon">🚫</span> <strong>NÃO.</strong> O arquivo possui classificação "Uso Interno Restrito" e deve ser compartilhado apenas por canais institucionais seguros (e-mail corporativo ou sistemas internos do hospital) e somente com servidores autorizados. Para envio ao DGH, use exclusivamente o processo via GRH 390.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Quem contatar em caso de dúvidas ou problemas?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <table class="faq-table">
+            <thead><tr><th>Tipo de Dúvida</th><th>Contato</th></tr></thead>
+            <tbody>
+              <tr><td>Preenchimento, códigos, prazos</td><td>Chefia imediata ou administrativo do setor</td></tr>
+              <tr><td>Problemas técnicos (fórmulas, erros)</td><td>Assessoria da Superintendência — HFB/GHC</td></tr>
+              <tr><td>Cadastro de profissionais (BASE_GHC)</td><td>RH do HFB</td></tr>
+              <tr><td>Cadastro de PJ (BASE_PJ)</td><td>Setor de Contratos</td></tr>
+              <tr><td>Normas e auditoria</td><td>Área Jurídica / Conformidade do hospital</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          <span class="q-icon">FAQ</span>
+          Este FAQ pode ser atualizado? Como recebo as novidades?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Sim. Este manual é atualizado sempre que o sistema evoluir. As atualizações são comunicadas pela Assessoria da Superintendência por e-mail corporativo e disponibilizadas no repositório institucional do HFB.</p>
+          <div class="alert alert-green"><span class="alert-icon">✅</span> Verifique sempre se está usando a versão mais recente do FAQ antes de iniciar o preenchimento de uma nova competência.</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- no-results -->
+    <div id="no-results">
+      <div class="icon">🔍</div>
+      <h3>Nenhum resultado encontrado</h3>
+      <p>Tente outras palavras-chave ou navegue pelas seções ao lado.</p>
+    </div>
+
+  </main>
+</div><!-- /layout -->
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <strong>Sistema de Controle de Escalas Médicas — HFB v2.0</strong><br>
+  Hospital Federal de Bonsucesso · Grupo Hospitalar Conceição · Ministério da Saúde<br>
+  Assessoria da Superintendência · Versão FAQ: Junho/2026 · Classificação: Uso Interno Restrito<br>
+  Retenção mínima: 5 anos · Referência normativa: GRH 390 | CGU | TCU
+</footer>
+
+<!-- Botão voltar ao topo -->
+<button id="scroll-top" aria-label="Voltar ao topo" title="Voltar ao topo">▲</button>
+
+<script>
+  // ── ACCORDION ────────────────────────────────────────────────
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      // fecha todos
+      document.querySelectorAll('.faq-item.open').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // ── SEARCH ──────────────────────────────────────────────────
+  const searchInput = document.getElementById('search-input');
+  const searchCount = document.getElementById('search-count');
+  const noResults   = document.getElementById('no-results');
+  const allItems    = document.querySelectorAll('.faq-item');
+  const allSections = document.querySelectorAll('.faq-section');
+  const totalFaqs   = allItems.length;
+
+  function normalize(str) {
+    return str.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w\s]/g, ' ');
+  }
+
+  searchInput.addEventListener('input', () => {
+    const q = normalize(searchInput.value.trim());
+    let visibleCount = 0;
+
+    allItems.forEach(item => {
+      if (!q) {
+        item.classList.remove('hidden');
+        visibleCount++;
+        return;
+      }
+      const text = normalize(item.textContent);
+      if (text.includes(q)) {
+        item.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        item.classList.add('hidden');
+        item.classList.remove('open');
+      }
+    });
+
+    // hide empty sections
+    allSections.forEach(sec => {
+      const visible = sec.querySelectorAll('.faq-item:not(.hidden)').length;
+      sec.style.display = visible === 0 && q ? 'none' : '';
+    });
+
+    // no results
+    noResults.style.display = visibleCount === 0 && q ? 'block' : 'none';
+
+    // count display
+    if (q) {
+      searchCount.textContent = `${visibleCount} de ${totalFaqs} perguntas encontradas`;
+    } else {
+      searchCount.textContent = '';
+    }
+  });
+
+  // ── ACTIVE SIDEBAR ───────────────────────────────────────────
+  const sections  = document.querySelectorAll('.faq-section');
+  const navLinks  = document.querySelectorAll('#sidebar-nav a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // ── SCROLL TOP ───────────────────────────────────────────────
+  const scrollBtn = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+  scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
